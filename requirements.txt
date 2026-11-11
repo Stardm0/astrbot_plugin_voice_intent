@@ -1,0 +1,3 @@
+# 开口吧：零第三方依赖，全部使用 AstrBot 自带 API 与 Python 标准库
+# 需要 AstrBot >= 4.5.7（用到 on_decorating_result 钩子、StarTools.get_data_dir、
+# context.llm_generate / get_current_chat_provider_id；llm 档才需要后两个）

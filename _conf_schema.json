@@ -1,0 +1,82 @@
+{
+  "enabled": {
+    "description": "总开关。关掉后插件完全不介入，回复与核心概率 TTS 全部照旧",
+    "type": "bool",
+    "default": true
+  },
+  "mode": {
+    "description": "判定档位。keyword（默认，推荐）= 关键词/正则命中就开口，零模型调用、零成本；llm = 隐含线索先过闸门再交给模型读语义，能抓「不想看字了」「我懒得看，你直接讲」这类没提语音二字的话；always = 每句都判，最灵敏也最费。运行时用 /开口 判定 <档位> 覆盖",
+    "type": "string",
+    "default": "keyword"
+  },
+  "hints": {
+    "description": "想听语音的候选短语，逗号分隔。留空用内置表（用语音/发语音/念给我听/别打字/不想看字/voice 等）",
+    "type": "string",
+    "default": ""
+  },
+  "off_hints": {
+    "description": "关闭语音的候选短语，逗号分隔。留空用内置表（别发语音/还是打字/不用语音/关掉语音 等）。命中直接改回文字，不花模型调用",
+    "type": "string",
+    "default": ""
+  },
+  "extra_regex": {
+    "description": "可选的额外召回正则，兜住内置表没覆盖的方言说法。留空则用内置关键词表",
+    "type": "string",
+    "default": ""
+  },
+  "judge_provider_id": {
+    "description": "llm / always 档做意图判定时用的模型 Provider ID。留空用当前会话默认模型。建议填便宜快模型：只判一次、输出一小段 JSON",
+    "type": "string",
+    "default": ""
+  },
+  "min_chars": {
+    "description": "去掉表情/标点后短于几个字就直接放行不判定（避免「嗯」「哈」也触发）",
+    "type": "int",
+    "default": 2
+  },
+  "max_tts_chars": {
+    "description": "朗读文本字数上限。回复超过这个值就保留文字不发语音，避免合成一条超长语音、也省 token",
+    "type": "int",
+    "default": 500
+  },
+  "strip_brackets": {
+    "description": "送 TTS 前删掉 [旺柴] 这类表情标记（踩坑 #14），避免把表情名念出来。只改合成文本，附原文时显示文本保持不变",
+    "type": "bool",
+    "default": true
+  },
+  "skip_tokens": {
+    "description": "整条命中就不发语音的静默暗号，逗号分隔。默认 [NO_REPLY] / 【NO_REPLY】/ [no reply]",
+    "type": "string",
+    "default": ""
+  },
+  "attach_text": {
+    "description": "发完语音再附一条原文，方便看到 [旺柴] 转成的真 QQ 表情。⚠️ 开这项时建议把核心 tts_trigger_probability 设为 0，否则核心概率 TTS 可能对附带的纯文本二次合成",
+    "type": "bool",
+    "default": false
+  },
+  "session_timeout_minutes": {
+    "description": "「接下来都用语音」模式多少分钟无操作后自动失效。0 = 不自动失效，直到用户说停或发 /开口 关",
+    "type": "int",
+    "default": 0
+  },
+  "in_request_aware": {
+    "description": "模型感知层总开关（默认开）。开启后：本轮会转成语音时，在 LLM 请求前告知模型「你这一轮是说出来的，请写成适合朗读的口语」；下一轮再补一条回执「你上一条是语音，别以为自己打了字」。关掉则回到纯装饰行为——语音照发，但模型不知道。全程零模型调用，只追加一小段 system_prompt",
+    "type": "bool",
+    "default": true
+  },
+  "receipt_ttl_minutes": {
+    "description": "上一轮语音实况保留多少分钟。超期后不再注入回执，避免隔很久还提醒「你刚才是语音」",
+    "type": "int",
+    "default": 30
+  },
+  "aware_extra": {
+    "description": "可选：追加到感知提示末尾的一句自定义要求（例如「称呼要带姓氏」）。留空不加",
+    "type": "string",
+    "default": ""
+  },
+  "log_decisions": {
+    "description": "把每次「本轮转语音」记一行 info 日志，排障时开",
+    "type": "bool",
+    "default": false
+  }
+}
